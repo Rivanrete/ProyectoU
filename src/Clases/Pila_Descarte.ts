@@ -1,51 +1,47 @@
 import { Carta } from "./Carta.js";
-import { Nodo_Carta } from "./Nodo_Carta.js";
+import { NodoCarta } from "./NodoCarta.js";
 
-export class Pila_Descarte{
-    public Top: Nodo_Carta | null=null;
-    constructor(){
-        this.Top = null;
-    }
+export class PilaDescarte {
+  cabeza: NodoCarta | null = null;
+  insertarFin(carta: Carta): void {
+    const nuevo = new NodoCarta(carta);
 
-    esta_Vacia(){
-        if(this.Top == null) return true;
-        else  return false; 
+    if (this.cabeza === null) {
+      this.cabeza = nuevo;
+    } else {
+      let actual = this.cabeza;
+      while (actual.siguiente !== null) {
+        actual = actual.siguiente;
+      }
+      actual.siguiente = nuevo;
     }
+  }
+  estaVacia(): boolean {
+    return this.cabeza === null;
+  }
+  obtenerTodas(): Carta[] {
+    const resultado: Carta[] = [];
+    let actual = this.cabeza;
 
-    insertar_Inicio(carta: Carta){
-        const cartaNueva = new Nodo_Carta(carta);
-        if(this.Top == null){
-            this.Top = cartaNueva;
-            return;
-        }
-        cartaNueva.Siguiente= this.Top;
-        this.Top = cartaNueva;
+    while (actual !== null) {
+      resultado.push(actual.carta);
+      actual = actual.siguiente;
     }
-
-    insertar_Final(carta: Carta){
-        const cartaNueva = new Nodo_Carta(carta);
-        if(this.Top == null){
-            this.Top = cartaNueva;
-            return;
-        }
-        let actual = this.Top;
-        while(actual.Siguiente !== null){
-            actual = actual.Siguiente!;
-        }
-        actual.Siguiente = cartaNueva;
+    return resultado;
+  }
+  vaciarYDevolver(): Carta[] {
+    const cartas = this.obtenerTodas();
+    this.cabeza = null;
+    return cartas;
+  }
+  limpiar(): void {
+    this.cabeza = null;
+  }
+  imprimir(): void {
+    let actual = this.cabeza;
+    while (actual !== null) {
+      console.log(actual.carta.toString());
+      actual = actual.siguiente;
     }
-
-    obtener_Cartas(){
-        let cartas = [];
-        let actual = this.Top;
-        while(actual !== null){
-            cartas.push(actual.Carta);
-            actual = actual.Siguiente!;
-        }
-        return cartas;
-    }
-
-    limpiar(){
-        this.Top = null;
-    }
-}   
+  }
+}
