@@ -62,8 +62,25 @@
 - [ ] **Feedback táctil en acciones**  
   Vibración o sonido sutil al robar carta, colocar y eliminar.
 
-- [ ] **Tooltips en elementos**  
-  Al hacer hover sobre cartas, mostrar información de valor y palo.
+- [ ] **Tooltips informativos en cartas**  
+  Al hacer hover prolongado sobre una carta colocada, mostrar tooltip con:
+  - Nombre completo de la carta (ej: "Rey de Corazones")
+  - Valor numérico para puntuación (ej: "Valor: 13 puntos")
+  - Palo y color (ej: "♥ Rojo")
+  - Capacidad de ataque (ej: "Puede destruir otros Reyes en la misma columna")
+
+---
+
+## Puntaje Animado
+
+- [ ] **Contador de puntos con animación incremental**  
+  El puntaje no debe cambiar de golpe (ej: 0 → 25).  
+  Debe incrementarse 1 en 1 visualmente (0 → 1 → 2 → ... → 25).  
+  Velocidad: ~50ms por incremento para efecto satisfactorio.
+
+- [ ] **Animación de resta al destruir cartas**  
+  Cuando una carta del oponente es destruida, su puntaje debe decrementarse 1 en 1.  
+  Color rojo en el número mientras resta.
 
 ---
 
@@ -80,7 +97,56 @@
 
 ---
 
-## Documentación de Estructuras de Datos
+## Tooltips Educativos de Estructuras de Datos (ℹ️)
+
+> **Objetivo**: Cada elemento del juego que use una estructura de datos debe tener un ícono ℹ️ (info) que al hacer hover/click muestre un tooltip explicativo de la estructura utilizada.
+
+- [ ] **Ícono ℹ️ junto al Mazo de Robo**  
+  Ubicación: Esquina superior del mazo (deck-box).  
+  Tooltip debe mostrar:
+  > **Mazo de Robo → Pila (Stack)**  
+  > - **Comportamiento**: LIFO (Last In, First Out)  
+  > - **Justificación**: Representa la física de un mazo real. Solo se accede a la carta superior.  
+  > - **Operaciones**: `push()` al iniciar/descartar, `pop()` al robar  
+  > - **Archivo**: `src/Clases/Pila.ts`
+
+- [ ] **Ícono ℹ️ junto a cada Columna del Tablero**  
+  Ubicación: Encabezado de cada columna (arriba de las 3 casillas).  
+  Tooltip debe mostrar:
+  > **Columna → Lista Doblemente Enlazada**  
+  > - **Comportamiento**: Bidireccional (Anterior ↔ Siguiente)  
+  > - **Justificación Puntuación**: Recorrer en ambas direcciones para detectar escaleras  
+  > - **Justificación Ataque**: Al destruir carta en medio, reconectar O(1) sin reindexar  
+  > - **Operación clave**: `nodo.anterior.siguiente = nodo.siguiente`  
+  > - **Archivo**: `src/Clases/ColumnaTablero.ts`
+
+- [ ] **Ícono ℹ️ junto al indicador de turno**  
+  Ubicación: Cerca del mensaje "Turno: Jugador X".  
+  Tooltip debe mostrar:
+  > **Gestor de Turnos → Lista Circular Simple**  
+  > - **Comportamiento**: El último nodo apunta al primero (`cola.siguiente = cabeza`)  
+  > - **Justificación**: Flujo infinito sin condicionales. Facilita añadir 3er jugador.  
+  > - **Archivo**: `src/Clases/GestorTurnos.ts`
+
+- [ ] **Ícono ℹ️ en el selector de columnas (teclado)**  
+  Ubicación: Junto a instrucciones de navegación ← →.  
+  Tooltip debe mostrar:
+  > **Selector de UI → Lista Circular Doblemente Enlazada**  
+  > - **Comportamiento**: Navegación infinita en ambas direcciones  
+  > - **Justificación**: Si está en Columna 3 y pulsa "→", salta a Columna 1 instantáneamente  
+  > - **Archivo**: `src/Clases/SelectorColumnas.ts`
+
+- [ ] **Ícono ℹ️ junto al Historial/Bitácora**  
+  Ubicación: Encabezado del modal o panel de historial.  
+  Tooltip debe mostrar:
+  > **Historial de Partida → Lista Enlazada Simple**  
+  > - **Comportamiento**: Inserción al final, recorrido secuencial  
+  > - **Justificación**: Bitácora inmutable. Solo requiere `append()` y lectura lineal.  
+  > - **Archivo**: `src/Clases/ListaHistorial.ts`
+
+---
+
+## Referencia de Estructuras de Datos
 
 ### 1. Mazo de Robo → Pila (Stack)
 - **Comportamiento**: LIFO (Last In, First Out)
