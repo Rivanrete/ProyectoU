@@ -1,0 +1,1 @@
+{"version":3,"file":"ListaSimple.d.ts","sourceRoot":"","sources":["../../src/Clases/ListaSimple.ts"],"names":[],"mappings":"AAAA,qBAAa,UAAU;IACnB,IAAI,EAAG,GAAG,CAAC;IACX,SAAS,EAAG,UAAU,GAAG,IAAI,CAAM;gBAEvB,IAAI,EAAG,GAAG;CAGzB;AACD,qBAAa,WAAW;IACpB,MAAM,EAAG,UAAU,GAAG,IAAI,CAAQ;IAElC,OAAO,CAAC,IAAI,EAAG,GAAG,GAAE,IAAI;IAYxB,QAAQ,IAAK,IAAI;CAOpB"}

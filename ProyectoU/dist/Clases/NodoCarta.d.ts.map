@@ -1,0 +1,1 @@
+{"version":3,"file":"NodoCarta.d.ts","sourceRoot":"","sources":["../../src/Clases/NodoCarta.ts"],"names":[],"mappings":"AAAA,OAAO,EAAE,KAAK,EAAE,MAAM,YAAY,CAAC;AAEnC,qBAAa,SAAS;IACpB,KAAK,EAAE,KAAK,CAAC;IACb,SAAS,EAAE,SAAS,GAAG,IAAI,CAAM;gBAErB,KAAK,EAAE,KAAK;CAGzB"}
