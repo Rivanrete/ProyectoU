@@ -1,11 +1,209 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="es">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+    <title>Corte de Baraja - Edición Profesional</title>
+
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css" />
 </head>
+
 <body>
+
+    <h1 class="header-title">Corte de Baraja</h1>
+    <div class="top-buttons">
+        <div class="tooltip-container">
+            <button class="btn-small" onclick="openModal('modal-log')">Historial</button>
+            <div class="tooltip-text">
+                <div class="tooltip-title">Lista Enlazada Simple</div>
+                <div class="tooltip-code">class ListaHistorial</div>
+                Almacena cada turno secuencialmente. Inserción rápida al final O(1).
+            </div>
+        </div>
+        <button class="btn-small" onclick="openModal('modal-rules')">?</button>
+    </div>
+
+    <div class="game-container">
+        <main class="main-board">
+            <section id="p0-ui" class="player-station active">
+                <div class="player-header">
+                    <span id="name-0">JUGADOR 1</span>
+                    <div id="score-0" class="score-box">0</div>
+                </div>
+                <div class="column-selector" id="selector-0">
+                    <div class="selector-dot" data-col="0"></div>
+                    <div class="selector-dot" data-col="1"></div>
+                    <div class="selector-dot" data-col="2"></div>
+                </div>
+                <div class="tooltip-container" style="position: absolute; top: -30px; right: 0;">
+                    <span style="color:var(--gold-border); font-size:0.8rem; cursor:help;">ℹ Estructura</span>
+                    <div class="tooltip-text">
+                        <div class="tooltip-title">Lista Doblemente Enlazada</div>
+                        <div class="tooltip-code">class ColumnaTablero</div>
+                        Cada columna permite navegar adelante/atrás. Inserción secuencial obligatoria.
+                    </div>
+                </div>
+
+                <div id="board-0" class="card-grid"></div>
+            </section>
+            <div class="interaction-zone">
+                <!-- Mazo 3D con 3 cartas apiladas -->
+                <div class="tooltip-container">
+                    <div class="deck-3d" id="btn-deck">
+                        <div class="deck-card deck-card-3"></div>
+                        <div class="deck-card deck-card-2"></div>
+                        <div class="deck-card deck-card-1">
+                            <span style="color: var(--gold-border); font-size: 2rem;">♠</span>
+                        </div>
+                    </div>
+                    <div class="tooltip-text">
+                        <div class="tooltip-title">Pila (Stack LIFO)</div>
+                        <div class="tooltip-code">class Mazo extends Pila</div>
+                        Las cartas se toman de la cima (Pop) y se devuelven a la cima (Push). Último en entrar, primero
+                        en salir.
+                    </div>
+                </div>
+                <div id="draw-preview" class="draw-preview-area"></div>
+                <!-- Botón tomar carta removido - click en mazo funciona -->
+                <button class="btn-action" id="btn-shuffle">Barajar Mazo</button>
+                <div id="shuffle-count" class="shuffle-counter">
+                    Barajadas restantes: 3/3
+                </div>
+                <div class="tooltip-container">
+                    <div id="status-msg">Turno: Jugador 1</div>
+                    <div class="tooltip-text" style="bottom: 100%;">
+                        <div class="tooltip-title">Lista Circular</div>
+                        <div class="tooltip-code">class GestorTurnos</div>
+                        Los turnos rotan infinitamente entre jugadores (NodoJugador) enlazados circularmente.
+                    </div>
+                </div>
+                <div id="recycle-indicator" class="recycle-indicator" style="display:none;">
+                    ♻ Carta reciclada
+                </div>
+
+            </div>
+
+            <!-- JUGADOR 2 -->
+            <section id="p1-ui" class="player-station">
+                <div class="player-header">
+                    <span id="name-1">JUGADOR 2</span>
+                    <div id="score-1" class="score-box">0</div>
+                </div>
+
+                <!-- Selector visual de columna -->
+                <div class="column-selector" id="selector-1">
+                    <div class="selector-dot" data-col="0"></div>
+                    <div class="selector-dot" data-col="1"></div>
+                    <div class="selector-dot" data-col="2"></div>
+                </div>
+                <div class="tooltip-container" style="position: absolute; top: -30px; right: 0;">
+                    <span style="color:var(--gold-border); font-size:0.8rem; cursor:help;">ℹ Estructura</span>
+                    <div class="tooltip-text">
+                        <div class="tooltip-title">Lista Doblemente Enlazada</div>
+                        <div class="tooltip-code">class ColumnaTablero</div>
+                        Cada columna permite navegar adelante/atrás. Inserción secuencial obligatoria.
+                    </div>
+                </div>
+
+                <div id="board-1" class="card-grid"></div>
+            </section>
+
+        </main>
+    </div>
+    <div id="modal-log" class="modal-overlay">
+        <div class="modal">
+            <h2>Historial de Partida</h2>
+            <div id="log-scroll-modal"></div>
+            <button onclick="closeModal('modal-log')">Cerrar</button>
+        </div>
+    </div>
+    <div id="modal-end" class="modal-overlay">
+        <div class="modal">
+            <h2>Fin de la Partida</h2>
+            <div id="final-summary"></div>
+            <button onclick="reiniciarJuego()">Reiniciar</button>
+            <button onclick="closeModal('modal-end')">Ver Tablero</button>
+        </div>
+    </div>
+    <div id="modal-rules" class="modal-overlay">
+        <div class="modal">
+            <h2>Reglas del Juego</h2>
+
+            <h3>1. Objetivo y Preparación</h3>
+            <p>
+                <strong>Meta:</strong> Llenar tu tablero de 3×3 con cartas para lograr la mayor puntuación posible.<br>
+                <strong>Componentes:</strong> Un mazo de 52 cartas sin Jokers y un tablero individual de 3×3 para cada
+                jugador.<br>
+                <strong>Inicio:</strong> Se baraja el mazo, se coloca al centro y se decide quién comienza.
+            </p>
+
+            <h3>2. Mecánica del Juego (Turnos)</h3>
+            <p>
+                <strong>Robo obligatorio:</strong> En tu turno debes robar la carta superior del mazo.<br>
+                <strong>Colocación:</strong> La carta robada se coloca en un espacio vacío de tu tablero.<br>
+                <strong>Permanencia:</strong> Una vez colocada, no puede moverse ni reemplazarse.
+            </p>
+
+            <h3>3. Regla de Ataque</h3>
+            <p>
+                <strong>Activación:</strong> Al colocar una carta, se activa un efecto de ataque.<br>
+                <strong>Efecto por columna:</strong> Si la carta colocada coincide en rango con cartas del oponente en
+                la misma columna, esas cartas del oponente se descartan.<br>
+                <strong>Solo rango:</strong> El palo no importa para el ataque.
+            </p>
+
+            <h3>4. Fin de la Partida</h3>
+            <p>
+                <strong>Condición:</strong> La partida termina cuando el tablero de cualquiera de los jugadores queda
+                completamente lleno (9 casillas).
+            </p>
+
+            <h3>5. Sistema de Puntuación</h3>
+            <p>
+                Se suman los valores de las cartas y se aplican bonos por columna.
+            </p>
+
+            <p>
+                <strong>Valores base:</strong><br>
+                2-10: valor nominal.<br>
+                J: 11 puntos.<br>
+                Q: 12 puntos.<br>
+                K: 13 puntos.<br>
+                A: 14 puntos.
+            </p>
+
+            <p>
+                <strong>Multiplicadores por Columna:</strong><br>
+                Pareja (2 iguales): suma x2.<br>
+                Trío (3 iguales): suma x3.<br>
+                Escalera (Secuencia): suma x1.5 (ej. 4,5,6).
+            </p>
+
+            <p>
+                <em>Nota: Las bonificaciones no son acumulables en una misma columna; se aplica la de mayor
+                    jerarquía.</em>
+            </p>
+
+            <button onclick="closeModal('modal-rules')">Cerrar</button>
+        </div>
+    </div>
+
     <script type="module" src="./dist/app.js"></script>
+
+    <script>
+        window.openModal = id => {
+            const modal = document.getElementById(id);
+            if (modal) modal.style.display = "flex";
+        };
+        window.closeModal = id => {
+            const modal = document.getElementById(id);
+            if (modal) modal.style.display = "none";
+        };
+        // No modal-start exists, so don't try to open it
+    </script>
+
 </body>
+
 </html>
